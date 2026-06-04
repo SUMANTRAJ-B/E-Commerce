@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentBuy // Multi-Agent Financial Feasibility Advisor</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="glow-backdrop"></div>
+    <div class="glow-backdrop-secondary"></div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="logoGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#00f2fe" />
+                                <stop offset="100%" stop-color="#4facfe" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h1>Agent<span>Buy</span></h1>
+            </div>
+            <p class="subtitle">Multi-Agent Purchase Feasibility Advisor</p>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="workspace-grid">
+            
+            <!-- Left Panel: Input & Profiler -->
+            <section class="card panel-input" id="profile-card">
+                <div class="card-header">
+                    <span class="step-num">01</span>
+                    <h2>Configure Purchase Profile</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Search Input -->
+                    <div class="input-group">
+                        <label for="product-search">What do you want to buy?</label>
+                        <div class="search-wrapper">
+                            <input type="text" id="product-search" placeholder="Search product (e.g. Tesla Model 3, iPhone 16 Pro Max...)" autocomplete="off">
+                            <button id="clear-search" class="btn-icon" style="display:none;">&times;</button>
+                            <div class="suggestions-list" id="suggestions-box"></div>
+                        </div>
+                        <div class="popular-tags">
+                            <span class="tag" data-val="iPhone 16 Pro Max">iPhone 16 Pro Max</span>
+                            <span class="tag" data-val="Tesla Model 3">Tesla Model 3</span>
+                            <span class="tag" data-val="MacBook Pro M3">MacBook Pro M3</span>
+                            <span class="tag" data-val="DJI Avata 2 Drone">DJI Avata 2</span>
+                        </div>
+                    </div>
+
+                    <!-- Price Input -->
+                    <div class="input-group">
+                        <div class="label-row">
+                            <label for="product-price">Estimated Price ($)</label>
+                            <span class="input-value-badge" id="price-badge">$1,199</span>
+                        </div>
+                        <input type="number" id="product-price" value="1199" min="10" max="1000000" class="input-number">
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Financial Inputs -->
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <div class="label-row">
+                                <label for="user-income">Monthly Net Income ($)</label>
+                                <span class="input-value-badge" id="income-badge">$5,000</span>
+                            </div>
+                            <input type="range" id="user-income" min="500" max="25000" step="100" value="5000" class="slider">
+                        </div>
+
+                        <div class="input-group">
+                            <div class="label-row">
+                                <label for="user-expenses">Monthly Living Expenses ($)</label>
+                                <span class="input-value-badge" id="expenses-badge">$3,200</span>
+                            </div>
+                            <input type="range" id="user-expenses" min="300" max="15000" step="100" value="3200" class="slider">
+                        </div>
+
+                        <div class="input-group col-span-2">
+                            <div class="label-row">
+                                <label for="user-savings">Total Accessible Savings ($)</label>
+                                <span class="input-value-badge" id="savings-badge">$8,500</span>
+                            </div>
+                            <input type="range" id="user-savings" min="0" max="100000" step="500" value="8500" class="slider">
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- Financing Section Toggle -->
+                    <div class="finance-toggle-row">
+                        <label class="switch-container">
+                            <input type="checkbox" id="enable-financing">
+                            <span class="switch-slider"></span>
+                        </label>
+                        <div class="switch-labels">
+                            <span class="title">Use Financing Options</span>
+                            <span class="desc">Calculate interest, terms, and monthly loan payment impact</span>
+                        </div>
+                    </div>
+
+                    <!-- Financing Options -->
+                    <div class="financing-options" id="financing-fields" style="display: none;">
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <div class="label-row">
+                                    <label for="finance-down-payment">Down Payment ($)</label>
+                                    <span class="input-value-badge" id="down-payment-badge">$200</span>
+                                </div>
+                                <input type="number" id="finance-down-payment" value="200" min="0" class="input-number">
+                            </div>
+
+                            <div class="input-group">
+                                <div class="label-row">
+                                    <label for="finance-term">Term (Months)</label>
+                                    <span class="input-value-badge" id="term-badge">24 mo</span>
+                                </div>
+                                <select id="finance-term" class="input-select">
+                                    <option value="12">12 Months (1 Year)</option>
+                                    <option value="24" selected>24 Months (2 Years)</option>
+                                    <option value="36">36 Months (3 Years)</option>
+                                    <option value="48">48 Months (4 Years)</option>
+                                    <option value="60">60 Months (5 Years)</option>
+                                    <option value="72">72 Months (6 Years)</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group col-span-2">
+                                <div class="label-row">
+                                    <label for="finance-apr">Interest Rate (APR %)</label>
+                                    <span class="input-value-badge" id="apr-badge">7.5%</span>
+                                </div>
+                                <input type="range" id="finance-apr" min="0" max="25" step="0.1" value="7.5" class="slider">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Button -->
+                    <button id="run-simulation-btn" class="btn-primary">
+                        <span class="btn-content">
+                            <svg class="btn-icon-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2V6M12 18V22M4.93 4.93L7.76 7.76M16.24 16.24L19.07 19.07M2 12H6M18 12H22M4.93 19.07L7.76 16.24M16.24 7.76L19.07 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <span>Analyze Financial Feasibility</span>
+                        </span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Right Panel: Agent Collaboration Terminal -->
+            <section class="card panel-agent" id="agent-card">
+                <div class="card-header">
+                    <span class="step-num">02</span>
+                    <h2>Multi-Agent Workspace</h2>
+                    <span class="live-pulse hidden" id="terminal-live-status">
+                        <span class="pulse-dot"></span>
+                        LIVE THINKING
+                    </span>
+                </div>
+                <div class="card-body terminal-body">
+                    <!-- Agent Rosters -->
+                    <div class="agents-roster">
+                        <div class="agent-avatar" id="avatar-scout" data-tooltip="Scout: Gathers product data & hidden fees">
+                            <div class="avatar-ring"></div>
+                            <div class="avatar-icon">🔍</div>
+                            <span class="agent-name">Scout</span>
+                        </div>
+                        <div class="agent-avatar" id="avatar-advisor" data-tooltip="Advisor: Conducts budget & risk modeling">
+                            <div class="avatar-ring"></div>
+                            <div class="avatar-icon">📊</div>
+                            <span class="agent-name">Advisor</span>
+                        </div>
+                        <div class="agent-avatar" id="avatar-alternatives" data-tooltip="Alternatives: Matches budget-friendly substitutes">
+                            <div class="avatar-ring"></div>
+                            <div class="avatar-icon">🔄</div>
+                            <span class="agent-name">Value</span>
+                        </div>
+                        <div class="agent-avatar" id="avatar-negotiator" data-tooltip="Negotiator: Formulates buying timing & deals">
+                            <div class="avatar-ring"></div>
+                            <div class="avatar-icon">🤝</div>
+                            <span class="agent-name">Negotiator</span>
+                        </div>
+                    </div>
+
+                    <!-- Chat Terminal Window -->
+                    <div class="terminal-window">
+                        <div class="terminal-titlebar">
+                            <div class="terminal-btns">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <div class="terminal-title">agent_session_console.sh</div>
+                        </div>
+                        <div class="terminal-logs" id="terminal-logs">
+                            <div class="system-msg">
+                                <span class="prompt">$</span> await_input --configure-profile
+                                <p class="help-text">Configure details on the left and click 'Analyze Financial Feasibility' to deploy the Agent Consensus Protocol.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dashboard Output Section (faded out initially, dynamic) -->
+            <section class="card col-span-full dashboard-section hidden" id="dashboard-card">
+                <div class="card-header dashboard-header">
+                    <div>
+                        <span class="step-num">03</span>
+                        <h2>Feasibility Analysis Dashboard</h2>
+                    </div>
+                    <div class="dashboard-controls">
+                        <span class="badge badge-product" id="dash-product-name">iPhone 16 Pro Max</span>
+                        <span class="badge badge-cost" id="dash-product-price-badge">$1,199</span>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Gauge and Core score -->
+                    <div class="grid-item score-container">
+                        <h3>Feasibility Index</h3>
+                        <div class="gauge-wrapper">
+                            <svg viewBox="0 0 100 100" class="gauge-svg">
+                                <circle class="gauge-bg" cx="50" cy="50" r="40"></circle>
+                                <circle class="gauge-fill" id="gauge-progress" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2"></circle>
+                            </svg>
+                            <div class="gauge-text">
+                                <span class="score-value" id="score-text">0</span>
+                                <span class="score-percent">%</span>
+                                <span class="score-status" id="score-label">Neutral</span>
+                            </div>
+                        </div>
+                        <div class="feasibility-verdict" id="feasibility-verdict-text">
+                            Waiting for analysis consensus...
+                        </div>
+                    </div>
+
+                    <!-- Realtime Sandbox Sliders (What-If Analysis) -->
+                    <div class="grid-item sandbox-container">
+                        <div class="sandbox-header">
+                            <h3>"What-If" Dynamic Sandbox</h3>
+                            <span class="sandbox-pill">Active Recalculation</span>
+                        </div>
+                        <p class="sandbox-desc">Adjust sliders below to instantly recalculate affordability benchmarks without resetting agent states.</p>
+                        
+                        <div class="sandbox-sliders">
+                            <div class="sandbox-input-group">
+                                <div class="slider-label-row">
+                                    <span>Product Purchase Cost</span>
+                                    <strong id="sandbox-price-val">$1,199</strong>
+                                </div>
+                                <input type="range" id="sandbox-price" class="slider sandbox-slider" min="10" max="150000" step="50">
+                            </div>
+
+                            <div class="sandbox-input-group">
+                                <div class="slider-label-row">
+                                    <span>Available Savings</span>
+                                    <strong id="sandbox-savings-val">$8,500</strong>
+                                </div>
+                                <input type="range" id="sandbox-savings" class="slider sandbox-slider" min="0" max="150000" step="500">
+                            </div>
+
+                            <div class="sandbox-input-group">
+                                <div class="slider-label-row">
+                                    <span>Monthly Net Cashflow (Income - Expenses)</span>
+                                    <strong id="sandbox-cashflow-val">$1,800</strong>
+                                </div>
+                                <input type="range" id="sandbox-cashflow" class="slider sandbox-slider" min="-2000" max="15000" step="100">
+                            </div>
+                        </div>
+
+                        <!-- Budget Health Bars -->
+                        <div class="budget-bars">
+                            <div class="bar-item">
+                                <div class="bar-labels">
+                                    <span>Purchase / Savings Ratio</span>
+                                    <span id="savings-ratio-text">14%</span>
+                                </div>
+                                <div class="progress-track">
+                                    <div class="progress-bar" id="savings-ratio-bar" style="width: 14%;"></div>
+                                </div>
+                            </div>
+                            <div class="bar-item">
+                                <div class="bar-labels">
+                                    <span>Expenses + Purchase / Income Ratio</span>
+                                    <span id="income-ratio-text">64%</span>
+                                </div>
+                                <div class="progress-track">
+                                    <div class="progress-bar" id="income-ratio-bar" style="width: 64%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Agent Output Breakdown Tabs -->
+                    <div class="grid-item details-container col-span-2">
+                        <!-- Tab Selectors -->
+                        <div class="tab-list">
+                            <button class="tab-btn active" data-tab="tab-scout">🔍 Scout Details</button>
+                            <button class="tab-btn" data-tab="tab-advisor">📊 Advisor Model</button>
+                            <button class="tab-btn" data-tab="tab-alternatives">🔄 Value Options</button>
+                            <button class="tab-btn" data-tab="tab-negotiator">🤝 Deal Tactics</button>
+                        </div>
+
+                        <!-- Tab Content Boxes -->
+                        <div class="tab-content active" id="tab-scout">
+                            <div class="agent-summary-box">
+                                <div class="summary-title-row">
+                                    <h4>True Cost Analysis</h4>
+                                    <span class="badge label-scout">Scout Agent Verified</span>
+                                </div>
+                                <ul class="cost-breakdown-list" id="scout-cost-breakdown">
+                                    <!-- Dynamic -->
+                                </ul>
+                                <div class="total-cost-box">
+                                    <span>Estimated First-Year Cost:</span>
+                                    <strong id="scout-first-year-total">$0</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="tab-advisor">
+                            <div class="agent-summary-box">
+                                <div class="summary-title-row">
+                                    <h4>Financial Impact Analysis</h4>
+                                    <span class="badge label-advisor">Advisor Agent Verified</span>
+                                </div>
+                                <div class="advisor-metrics-grid">
+                                    <div class="metric-card">
+                                        <span class="metric-label">Savings Runway (Pre-purchase)</span>
+                                        <span class="metric-value" id="runway-before">--</span>
+                                        <span class="metric-unit">Months of safety</span>
+                                    </div>
+                                    <div class="metric-card">
+                                        <span class="metric-label">Savings Runway (Post-purchase)</span>
+                                        <span class="metric-value" id="runway-after">--</span>
+                                        <span class="metric-unit">Months of safety</span>
+                                    </div>
+                                    <div class="metric-card">
+                                        <span class="metric-label">Debt-to-Income (Installment)</span>
+                                        <span class="metric-value" id="dti-ratio">--</span>
+                                        <span class="metric-unit">Monthly burden %</span>
+                                    </div>
+                                    <div class="metric-card">
+                                        <span class="metric-label">Financial Risk Rating</span>
+                                        <span class="metric-value text-red" id="risk-rating">--</span>
+                                        <span class="metric-unit">Calculated Safety Grade</span>
+                                    </div>
+                                </div>
+                                <div class="advisor-narrative" id="advisor-narrative-text">
+                                    Analyzing ratios...
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="tab-alternatives">
+                            <div class="agent-summary-box">
+                                <div class="summary-title-row">
+                                    <h4>Budget-Aligned Alternatives</h4>
+                                    <span class="badge label-alternatives">Value Agent Verified</span>
+                                </div>
+                                <p class="alt-intro">Based on your parameters, these items provide higher financial feasibility ratings:</p>
+                                <div class="alternatives-list" id="alternatives-suggestions-list">
+                                    <!-- Dynamic alternative product cards -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="tab-negotiator">
+                            <div class="agent-summary-box">
+                                <div class="summary-title-row">
+                                    <h4>Tactical Deal Strategy</h4>
+                                    <span class="badge label-negotiator">Negotiator Agent Verified</span>
+                                </div>
+                                <div class="deal-tactics-section">
+                                    <h5>Optimal Purchase Window</h5>
+                                    <p id="negotiator-timing-text">Analyzing release cycles...</p>
+                                    
+                                    <h5>Savings & Discount Opportunities</h5>
+                                    <ul id="negotiator-discounts-list">
+                                        <!-- Dynamic tactics -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>AgentBuy Prototype // Built with HTML, CSS Grid, and multi-agent simulation routines.</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
